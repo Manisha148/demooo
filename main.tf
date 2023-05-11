@@ -55,9 +55,9 @@ resource "aws_codepipeline" "example" {
       configuration   = {
         ClusterName   = var.ecs_cluster_name
         ServiceName   = var.ecs_service_name
-        ImageTag      = var.docker_image_tag
-        ActionMode    = "REPLACE_ON_FAILURE"
-        RunOrder      = "1"
+        FileName           = "imagedefinitions.json"
+        AppSpecTemplate    = "appspec.yml"
+        TaskDefinitionFile = "taskdef.json"
       }
     }
   }
