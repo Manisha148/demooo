@@ -12,9 +12,11 @@ resource "aws_elastic_beanstalk_environment" "example" {
 # Create the CodePipeline
 resource "aws_codepipeline" "example" {
   name = "example"
+  
+  role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   artifact_store {
-    location = "mybucketmanisha09845"
+    location = "mymanishabucket5678"
     type     = "S3"
   }
 
@@ -44,10 +46,10 @@ resource "aws_codepipeline" "example" {
       output_artifacts = ["build"]
       configuration   = {
         ProjectName = "example-build"
-        EnvironmentVariables = {
-          "APPLICATION_NAME" = aws_elastic_beanstalk_application.example.name
-          "ENVIRONMENT_NAME" = aws_elastic_beanstalk_environment.example.name
-        }
+        EnvironmentVariables = jsonencode({
+          APPLICATION_NAME = aws_elastic_beanstalk_application.example.name
+          ENVIRONMENT_NAME = aws_elastic_beanstalk_environment.example.name
+        })
       }
     }
   }
@@ -62,10 +64,10 @@ resource "aws_codepipeline" "example" {
       provider        = "ElasticBeanstalk"
       version         = "1"
       input_artifacts = ["build"]
-      configuration   = {
+      configuration   = jsonencode({
         ApplicationName = aws_elastic_beanstalk_application.example.name
         EnvironmentName = aws_elastic_beanstalk_environment.example.name
-      }
+      })
     }
   }
 }
@@ -75,7 +77,7 @@ resource "aws_codebuild_project" "example" {
   name          = "example-build"
   source {
     type            = "CODECOMMIT"
-    location        = "my-repo"
+    location        = "my-repo3456"
     git_clone_depth = 1
   }
   artifacts {
