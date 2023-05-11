@@ -3,7 +3,7 @@ resource "aws_codepipeline" "example" {
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   artifact_store {
-    location = "demopipeline0098"
+    location = "demopipeline00981"
     type     = "S3"
   }
 
