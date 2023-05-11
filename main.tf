@@ -1,9 +1,35 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_iam_role" "codepipeline" {
+  name = "example-codepipeline-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "codepipeline.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "codepipeline" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipelineFullAccess"
+  role       = aws_iam_role.codepipeline.name
+}
+
 resource "aws_codepipeline" "example" {
-  name     = "example"
-  role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
+  name     = "example-pipeline"
+  role_arn = aws_iam_role.codepipeline.arn
 
   artifact_store {
-    location = "s3://${var.mycform}"
+    location = "s3://${var.s3_bucket_name}"
     type     = "S3"
   }
 
@@ -14,9 +40,15 @@ resource "aws_codepipeline" "example" {
       name            = "Source"
       category        = "Source"
       owner           = "AWS"
-      provider        = "CodeCommit"
+      provider        = "S3"
       version         = "1"
       output_artifacts = ["source"]
+      
+      configuration = {
+        S3Bucket        = var.s3_bucket_name
+        S3ObjectKey     = var.source_code_zip_file_key
+        PollForSourceChanges = "false"
+      }
     }
   }
 
@@ -31,33 +63,9 @@ resource "aws_codepipeline" "example" {
       version         = "1"
       input_artifacts  = ["source"]
       output_artifacts = ["build"]
+      
       configuration   = {
-        ProjectName      = aws_codebuild_project.example.name
-        EnvironmentVariables = {
-          "APPLICATION_NAME" = aws_elastic_beanstalk_application.example.name
-          "ENVIRONMENT_NAME" = aws_elastic_beanstalk_environment.example.name
-        }
-      }
-    }
-  }
-
-  stage {
-    name = "Deploy"
-
-    action {
-      name            = "Deploy"
-      category        = "Deploy"
-      owner           = "AWS"
-      provider        = "ElasticBeanstalk"
-      version         = "1"
-      input_artifacts = ["build"]
-
-      configuration = {
-        ApplicationName         = aws_elastic_beanstalk_application.example.name
-        EnvironmentName         = aws_elastic_beanstalk_environment.example.name
-        DeploymentCommand       = "eb deploy"
-        DeploymentTimeoutInMinutes = "5"
-        IgnoreApplicationStopFailures = "true"
+        ProjectName = var.codebuild_project_name
       }
     }
   }
