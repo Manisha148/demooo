@@ -1,22 +1,9 @@
-# Create the Elastic Beanstalk application and environment
-resource "aws_elastic_beanstalk_application" "example" {
-  name = "example"
-}
-
-resource "aws_elastic_beanstalk_environment" "example" {
-  name                = "example"
-  application         = aws_elastic_beanstalk_application.example.name
-  solution_stack_name = "64bit Amazon Linux 2 v5.4.10 running PHP 7.3"
-}
-
-# Create the CodePipeline
 resource "aws_codepipeline" "example" {
-  name = "example"
-  
-  role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
+  name     = "example"
+  role_arn = arn:aws:iam::124288123671:role/awsrolecodebuld
 
   artifact_store {
-    location = "mymanishabucket5678"
+    location = "s3://${var.mycform}"
     type     = "S3"
   }
 
@@ -42,14 +29,14 @@ resource "aws_codepipeline" "example" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["source"]
+      input_artifacts  = ["source"]
       output_artifacts = ["build"]
       configuration   = {
-        ProjectName = "example-build"
-        EnvironmentVariables = jsonencode({
-          APPLICATION_NAME = aws_elastic_beanstalk_application.example.name
-          ENVIRONMENT_NAME = aws_elastic_beanstalk_environment.example.name
-        })
+        ProjectName      = aws_codebuild_project.example.name
+        EnvironmentVariables = {
+          "APPLICATION_NAME" = aws_elastic_beanstalk_application.example.name
+          "ENVIRONMENT_NAME" = aws_elastic_beanstalk_environment.example.name
+        }
       }
     }
   }
@@ -64,29 +51,10 @@ resource "aws_codepipeline" "example" {
       provider        = "ElasticBeanstalk"
       version         = "1"
       input_artifacts = ["build"]
-      configuration   = jsonencode({
-        ApplicationName = aws_elastic_beanstalk_application.example.name
+      configuration   = {
+        ApplicationName = aws_elastic_beanstalk_environment.example.name
         EnvironmentName = aws_elastic_beanstalk_environment.example.name
-      })
+      }
     }
   }
-}
-
-# Create the CodeBuild project
-resource "aws_codebuild_project" "example" {
-  name          = "example-build"
-  source {
-    type            = "CODECOMMIT"
-    location        = "my-repo3456"
-    git_clone_depth = 1
-  }
-  artifacts {
-    type = "CODEPIPELINE"
-  }
-  environment {
-    compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
-    type         = "LINUX_CONTAINER"
-  }
-  service_role = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 }
