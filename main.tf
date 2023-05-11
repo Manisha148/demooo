@@ -3,7 +3,7 @@ resource "aws_codepipeline" "example" {
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   artifact_store {
-    location = "s3://${var.s3_bucket_name}"
+    location = "s3://${var.bucketmanutf98}"
     type     = "S3"
   }
 
