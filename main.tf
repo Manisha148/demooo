@@ -1,3 +1,14 @@
+resource "aws_codedeploy_deployment_group" "example" {
+  app_name = var.codedeploy_app_name
+  deployment_group_name = "example"
+  service_role_arn = var.codedeploy_service_role_arn
+  deployment_config_name = "CodeDeployDefault.OneAtATime"
+}
+
+resource "aws_codedeploy_app" "example" {
+  name = var.codedeploy_app_name
+}
+
 resource "aws_codepipeline" "example" {
   name     = "example"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
@@ -42,7 +53,7 @@ resource "aws_codepipeline" "example" {
     }
   }
 
-   stage {
+  stage {
     name = "Deploy"
 
     action {
@@ -52,14 +63,28 @@ resource "aws_codepipeline" "example" {
       provider = "CodeDeploy"
       input_artifacts = ["build"]
       configuration = {
-        DeploymentGroupName = aws_codedeploy_deployment_group.example.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
         AppSpecTemplate = file("appspec.yml")
       }
     }
   }
+
+  stage {
+    name = "DeployToEc2"
+
+    action {
+      name = "DeployToEc2Action"
+      category = "Deploy"
+      owner = "AWS"
+      provider = "CodeDeployToEc2"
+      input_artifacts = ["build"]
+      configuration = {
+        ApplicationName = aws_codedeploy_app.example.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
+      }
+    }
+  }
 }
-
-
 
 
 # resource "aws_codepipeline" "example" {
