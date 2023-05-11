@@ -1,6 +1,6 @@
 resource "aws_codepipeline" "example" {
   name     = "example"
-  role_arn = aws_iam_role.example.arn
+  role_arn = arn:aws:iam::124288123671:role/awsrolecodebuld/n
 
   artifact_store {
     location = "s3://${var.s3_bucket_name}"
