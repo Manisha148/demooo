@@ -42,22 +42,18 @@ resource "aws_codepipeline" "example" {
     }
   }
 
-  stage {
+   stage {
     name = "Deploy"
 
     action {
-      name            = "Deploy"
-      category        = "Deploy"
-      owner           = "AWS"
-      provider        = "ECS"
-      version         = "1"
-      input_artifacts  = ["build"]
-      configuration   = {
-        ClusterName   = var.ecs_cluster_name
-        ServiceName   = var.ecs_service_name
-        FileName           = "imagedefinitions.json"
-        AppSpecTemplate    = "appspec.yml"
-        TaskDefinitionFile = "taskdef.json"
+      name = "DeployAction"
+      category = "Deploy"
+      owner = "AWS"
+      provider = "CodeDeploy"
+      input_artifacts = ["build"]
+      configuration = {
+        DeploymentGroupName = aws_codedeploy_deployment_group.example.name
+        AppSpecTemplate = file("appspec.yml")
       }
     }
   }
