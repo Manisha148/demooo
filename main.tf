@@ -1,32 +1,6 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
-resource "aws_iam_role" "codepipeline" {
-  name = "example-codepipeline-role"
-  
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "codepipeline.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "codepipeline" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipelineFullAccess"
-  role       = aws_iam_role.codepipeline.name
-}
-
 resource "aws_codepipeline" "example" {
-  name     = "example-pipeline"
-  role_arn = aws_iam_role.codepipeline.arn
+  name     = "example"
+  role_arn = aws_iam_role.example.arn
 
   artifact_store {
     location = "s3://${var.s3_bucket_name}"
@@ -43,11 +17,10 @@ resource "aws_codepipeline" "example" {
       provider        = "S3"
       version         = "1"
       output_artifacts = ["source"]
-      
+
       configuration = {
-        S3Bucket        = var.s3_bucket_name
-        S3ObjectKey     = var.source_code_zip_file_key
-        PollForSourceChanges = "false"
+        S3Bucket    = var.s3_bucket_name
+        S3ObjectKey = var.source_code_zip_file_key
       }
     }
   }
@@ -63,9 +36,8 @@ resource "aws_codepipeline" "example" {
       version         = "1"
       input_artifacts  = ["source"]
       output_artifacts = ["build"]
-      
       configuration   = {
-        ProjectName = var.codebuild_project_name
+        ProjectName      = var.codebuild_project_name
       }
     }
   }
