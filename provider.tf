@@ -9,10 +9,16 @@ variable "source_code_zip_file_key" {
 variable "codebuild_project_name" {
   type = string
 }
-variable "codedeploy_app_name" {
-  type    = string
-  default = "my-codedeploy-app"
-}
-variable "codedeploy_service_role_arn" {
+variable "codedeploy_application_name" {
   type = string
 }
+
+variable "codedeploy_deployment_group_name" {
+  type = string
+}
+
+variable "codedeploy_deployment_config_name" {
+  type = string
+}
+
+
