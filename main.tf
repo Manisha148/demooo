@@ -18,7 +18,7 @@ resource "aws_codebuild_project" "example" {
     privileged_mode = true
   }
 
-  service_role = aws_iam_role.codebuild_role.arn
+  service_role = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   tags = {
     Environment = "dev"
