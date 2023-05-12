@@ -2,11 +2,24 @@
 resource "aws_codepipeline" "example123" {
   name     = "example123"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
+ resource "aws_codedeploy_deployment_group" "example" {
+  name               = "example"
+  app_name           = aws_codedeploy_app.example.name
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
+  ec2_tag_set {
+    tag_filter_type = "KEY_AND_VALUE"
+    tag_filter {
+      key   = "environment"
+      value = "production"
+    }
+  }
+}
 
   artifact_store {
     location = "demopipeline00981"
     type     = "S3"
   }
+  
 
   stage {
     name = "Source"
