@@ -2,6 +2,11 @@ resource "aws_codebuild_project" "example" {
   name          = var.codebuild_project_name
   description   = "Example CodeBuild project"
   build_timeout = 60
+  artifacts {
+  type = "zip"
+  name = "output"
+}
+
 
   source {
     type            = "S3"
