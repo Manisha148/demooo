@@ -1,6 +1,6 @@
 
-resource "aws_codepipeline" "example12" {
-  name     = "example12"
+resource "aws_codepipeline" "example123" {
+  name     = "example123"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   artifact_store {
@@ -42,4 +42,21 @@ resource "aws_codepipeline" "example12" {
       }
     }
   }
+  stage {
+  name = "Deploy"
+
+  action {
+    name = "Deploy"
+    category = "Deploy"
+    owner = "AWS"
+    provider = "CodeDeploy"
+    input_artifacts = ["build"]
+    configuration = {
+      ApplicationName = aws_codedeploy_app.example.name
+      DeploymentGroupName = aws_codedeploy_deployment_group.example.name
+      DeploymentConfigName = "CodeDeployDefault.OneAtATime"
+    }
+  }
+}
+
 }
