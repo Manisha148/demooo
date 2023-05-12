@@ -1,3 +1,18 @@
+resource "aws_codedeploy_app" "example" {
+  name = "example"
+}
+
+resource "aws_codedeploy_deployment_group" "example" {
+  name                   = "example"
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
+  service_role_arn       = "arn:aws:iam::123456789012:role/CodeDeployServiceRole"
+  app_name               = aws_codedeploy_app.example.name
+
+  auto_rollback_configuration {
+    enabled = true
+    events  = ["DEPLOYMENT_FAILURE"]
+  }
+}
 
 resource "aws_codepipeline" "example7" {
   name     = "example7"
