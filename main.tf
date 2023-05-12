@@ -1,3 +1,7 @@
+resource "aws_codedeploy_app" "example" {
+  name = "example-app"
+  compute_platform = "Server"
+}
 
 resource "aws_codepipeline" "example123" {
   name     = "example123"
