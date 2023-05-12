@@ -8,11 +8,6 @@ resource "aws_codedeploy_deployment_group" "example" {
   deployment_group_name = "example-deployment-group"
   service_role_arn     = "arn:aws:iam::124288123671:role/awsrolecodedeploy"
 }
-
-resource "aws_codepipeline" "example123" {
-  name     = "example123"
-  role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
-
   artifact_store {
     location = "demopipeline00981"
     type     = "S3"
@@ -53,6 +48,10 @@ resource "aws_codepipeline" "example123" {
     }
   }
 
+  resource "aws_codepipeline" "example123" {
+  name     = "example123"
+  role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
+
   stage {
     name = "Deploy"
 
@@ -64,9 +63,10 @@ resource "aws_codepipeline" "example123" {
       input_artifacts = ["build"]
       configuration = {
         ApplicationName = aws_codedeploy_app.example.name
-        DeploymentGroupName = aws_codedeploy_deployment_group.example.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
         DeploymentConfigName = "CodeDeployDefault.OneAtATime"
       }
     }
   }
 }
+
