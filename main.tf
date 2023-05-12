@@ -1,6 +1,12 @@
 resource "aws_codedeploy_app" "example" {
   name = var.codedeploy_app_name
 }
+variable "codedeploy_app_name" {
+  codedeploy_app_name = "my-codedeploy-app"
+
+  description = "Name of the AWS CodeDeploy application"
+}
+
 
 resource "aws_codedeploy_deployment_group" "example" {
   app_name = aws_codedeploy_app.example.name
