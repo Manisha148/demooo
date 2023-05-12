@@ -1,16 +1,3 @@
-resource "aws_codedeploy_app" "example" {
-  name = var.codedeploy_app_name
-}
-
-resource "aws_codedeploy_deployment_group" "example" {
-  name                      = "example"
-  deployment_config_name    = "CodeDeployDefault.OneAtATime"
-  service_role_arn          = "arn:aws:iam::124288123671:role/awsrolecodebuld"
-  auto_rollback_configuration {
-    enabled            = true
-    events             = ["DEPLOYMENT_FAILURE"]
-  }
-}
 
 resource "aws_codepipeline" "example" {
   name     = "example"
@@ -55,22 +42,3 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
-
-  stage {
-    name = "Deploy"
-
-    action {
-      name            = "DeployAction"
-      category        = "Deploy"
-      owner           = "AWS"
-      provider        = "CodeDeploy"
-      version         = "1"
-      input_artifacts = ["build"]
-      configuration = {
-        ApplicationName        = aws_codedeploy_app.example.name
-        DeploymentGroupName    = aws_codedeploy_deployment_group.example.name
-        DeploymentConfigName   = "CodeDeployDefault.ECSAllAtOnce"
-      }
-    }
-  }
-}
