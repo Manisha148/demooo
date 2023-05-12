@@ -44,7 +44,7 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
-}
+
 
   stage {
     name = "Deploy"
@@ -61,3 +61,4 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
+}
