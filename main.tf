@@ -1,6 +1,6 @@
 
-resource "aws_codepipeline" "example" {
-  name     = "example"
+resource "aws_codepipeline" "example7" {
+  name     = "example7"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   artifact_store {
@@ -42,3 +42,4 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
+}
