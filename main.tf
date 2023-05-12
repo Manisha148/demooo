@@ -2,6 +2,11 @@ resource "aws_codedeploy_app" "example" {
   name = "example-app"
   compute_platform = "Server"
 }
+resource "aws_codedeploy_deployment_group" "example1" {
+  app_name             = aws_codedeploy_app.example.name
+  deployment_group_name = "example-deployment-group"
+  service_role_arn     = "arn:aws:iam::124288123671:role/awsrolecodedeploy"
+}
 
 resource "aws_codepipeline" "example123" {
   name     = "example123"
