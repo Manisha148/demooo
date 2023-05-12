@@ -4,14 +4,12 @@ resource "aws_codedeploy_app" "example" {
 
 
 resource "aws_codedeploy_deployment_group" "example" {
-  app_name = aws_codedeploy_app.example.name
-  deployment_group_name = "example"
-  service_role_arn = var.codedeploy_service_role_arn
-  deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
-  auto_rollback_configuration {
-    enabled = true
-    events  = ["DEPLOYMENT_FAILURE"]
-  }
+  name             = "example"
+  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  service_role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
+  ...
+}
+
 }
 
 resource "aws_codepipeline" "example" {
