@@ -7,7 +7,11 @@ resource "aws_codedeploy_deployment_group" "example" {
   name             = "example"
   deployment_config_name = "CodeDeployDefault.OneAtATime"
   service_role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
-  ...
+   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
+  auto_rollback_configuration {
+    enabled = true
+    events  = ["DEPLOYMENT_FAILURE"]
+  }
 }
 
 }
