@@ -1,3 +1,24 @@
+terraform {
+  required_version = ">= 1.0.0"
+  # other configuration options
+}
+
+# Define input variables
+variable "codedeploy_application_name" {
+  type = string
+}
+
+variable "codedeploy_deployment_group_name" {
+  type = string
+}
+
+variable "codedeploy_deployment_config_name" {
+  type = string
+}
+
+# Define resources
+# ...
+
 resource "aws_codepipeline" "example" {
   name     = "example"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
