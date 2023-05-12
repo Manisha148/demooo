@@ -1,5 +1,17 @@
+resource "aws_codedeploy_app" "example" {
+  name = var.codedeploy_app_name
+}
 
-
+resource "aws_codedeploy_deployment_group" "example" {
+  app_name = aws_codedeploy_app.example.name
+  deployment_group_name = "example"
+  service_role_arn = var.codedeploy_service_role_arn
+  deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
+  auto_rollback_configuration {
+    enabled = true
+    events  = ["DEPLOYMENT_FAILURE"]
+  }
+}
 
 resource "aws_codepipeline" "example" {
   name     = "example"
@@ -45,7 +57,6 @@ resource "aws_codepipeline" "example" {
     }
   }
 
-
   stage {
     name = "Deploy"
 
@@ -58,6 +69,7 @@ resource "aws_codepipeline" "example" {
       configuration = {
         ApplicationName = aws_codedeploy_app.example.name
         DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
+        DeploymentConfigName = "CodeDeployDefault.ECSAllAtOnce"
       }
     }
   }
