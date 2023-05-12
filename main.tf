@@ -2,7 +2,8 @@ resource "aws_codedeploy_app" "example" {
   name = "example-app"
   compute_platform = "Server"
 }
-resource "aws_codedeploy_deployment_group" "example1" {
+
+resource "aws_codedeploy_deployment_group" "example" {
   app_name             = aws_codedeploy_app.example.name
   deployment_group_name = "example-deployment-group"
   service_role_arn     = "arn:aws:iam::124288123671:role/awsrolecodedeploy"
@@ -11,24 +12,11 @@ resource "aws_codedeploy_deployment_group" "example1" {
 resource "aws_codepipeline" "example123" {
   name     = "example123"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
- resource "aws_codedeploy_deployment_group" "example" {
-  name               = "example"
-  app_name           = aws_codedeploy_app.example.name
-  deployment_config_name = "CodeDeployDefault.AllAtOnce"
-  ec2_tag_set {
-    tag_filter_type = "KEY_AND_VALUE"
-    tag_filter {
-      key   = "environment"
-      value = "production"
-    }
-  }
-}
 
   artifact_store {
     location = "demopipeline00981"
     type     = "S3"
   }
-  
 
   stage {
     name = "Source"
@@ -64,21 +52,21 @@ resource "aws_codepipeline" "example123" {
       }
     }
   }
-  stage {
-  name = "Deploy"
 
-  action {
+  stage {
     name = "Deploy"
-    category = "Deploy"
-    owner = "AWS"
-    provider = "CodeDeploy"
-    input_artifacts = ["build"]
-    configuration = {
-      ApplicationName = aws_codedeploy_app.example.name
-      DeploymentGroupName = aws_codedeploy_deployment_group.example.name
-      DeploymentConfigName = "CodeDeployDefault.OneAtATime"
+
+    action {
+      name = "Deploy"
+      category = "Deploy"
+      owner = "AWS"
+      provider = "CodeDeploy"
+      input_artifacts = ["build"]
+      configuration = {
+        ApplicationName = aws_codedeploy_app.example.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.example.name
+        DeploymentConfigName = "CodeDeployDefault.OneAtATime"
+      }
     }
   }
-}
-
 }
