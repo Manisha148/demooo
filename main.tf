@@ -5,7 +5,7 @@ resource "aws_codebuild_project" "example" {
  artifacts {
   type = "S3"
   name = "my-artifacts"
-  bucket_identifier = var.s3_bucket_name
+ 
 }
 
 
