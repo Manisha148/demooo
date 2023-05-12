@@ -13,3 +13,6 @@ variable "codedeploy_app_name" {
   type    = string
   default = "my-codedeploy-app"
 }
+variable "codedeploy_service_role_arn" {
+  type = string
+}
