@@ -1,13 +1,5 @@
-resource "aws_codedeploy_deployment_group" "example" {
-  app_name = var.codedeploy_app_name
-  deployment_group_name = "example"
-  service_role_arn = var.codedeploy_service_role_arn
-  deployment_config_name = "CodeDeployDefault.OneAtATime"
-}
 
-resource "aws_codedeploy_app" "example" {
-  name = var.codedeploy_app_name
-}
+
 
 resource "aws_codepipeline" "example" {
   name     = "example"
@@ -52,6 +44,7 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
+}
 
   stage {
     name = "Deploy"
@@ -63,71 +56,8 @@ resource "aws_codepipeline" "example" {
       provider = "CodeDeploy"
       input_artifacts = ["build"]
       configuration = {
-        DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
-        AppSpecTemplate = file("appspec.yml")
-      }
-    }
-  }
-
-  stage {
-    name = "DeployToEc2"
-
-    action {
-      name = "DeployToEc2Action"
-      category = "Deploy"
-      owner = "AWS"
-      provider = "CodeDeployToEc2"
-      input_artifacts = ["build"]
-      configuration = {
         ApplicationName = aws_codedeploy_app.example.name
         DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
       }
     }
   }
-}
-
-
-# resource "aws_codepipeline" "example" {
-#   name     = "example"
-#   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
-
-#   artifact_store {
-#     location = "demopipeline00981"
-#     type     = "S3"
-#   }
-
-#   stage {
-#     name = "Source"
-
-#     action {
-#       name            = "Source"
-#       category        = "Source"
-#       owner           = "AWS"
-#       provider        = "S3"
-#       version         = "1"
-#       output_artifacts = ["source"]
-
-#       configuration = {
-#         S3Bucket    = var.s3_bucket_name
-#         S3ObjectKey = var.source_code_zip_file_key
-#       }
-#     }
-#   }
-
-#   stage {
-#     name = "Build"
-
-#     action {
-#       name            = "Build"
-#       category        = "Build"
-#       owner           = "AWS"
-#       provider        = "CodeBuild"
-#       version         = "1"
-#       input_artifacts  = ["source"]
-#       output_artifacts = ["build"]
-#       configuration   = {
-#         ProjectName      = var.codebuild_project_name
-#       }
-#     }
-#   }
-# }
