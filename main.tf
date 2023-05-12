@@ -1,5 +1,32 @@
-resource "aws_codepipeline" "example0" {
-  name     = "example0"
+resource "aws_codebuild_project" "example" {
+  name          = var.codebuild_project_name
+  description   = "Example CodeBuild project"
+  build_timeout = 60
+
+  source {
+    type            = "S3"
+    location        = var.s3_bucket_name
+    buildspec       = "buildspec.yml"
+    insecure_ssl    = false
+    report_build_status = true
+  }
+
+  environment {
+    compute_type  = "BUILD_GENERAL1_SMALL"
+    image         = "aws/codebuild/standard:4.0"
+    type          = "LINUX_CONTAINER"
+    privileged_mode = true
+  }
+
+  service_role = aws_iam_role.codebuild_role.arn
+
+  tags = {
+    Environment = "dev"
+  }
+}
+
+resource "aws_codepipeline" "example" {
+  name     = "example"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
 
   artifact_store {
@@ -37,7 +64,7 @@ resource "aws_codepipeline" "example0" {
       input_artifacts  = ["source"]
       output_artifacts = ["build"]
       configuration   = {
-        ProjectName      = var.codebuild_project_name
+        ProjectName      = aws_codebuild_project.example.name
       }
     }
   }
