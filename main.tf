@@ -1,3 +1,6 @@
+# This is an example Terraform configuration for an AWS CodeBuild project and CodePipeline.
+
+# Define the AWS CodeBuild project
 resource "aws_codebuild_project" "example" {
   name          = var.codebuild_project_name
   description   = "Example CodeBuild project"
@@ -31,7 +34,7 @@ resource "aws_codebuild_project" "example" {
     Environment = "dev"
   }
 }
-
+# Define the AWS CodePipeline
 resource "aws_codepipeline" "example" {
   name     = "example"
   role_arn = "arn:aws:iam::124288123671:role/awsrolecodebuld"
@@ -40,10 +43,10 @@ resource "aws_codepipeline" "example" {
     location = "demopipeline00981"
     type     = "S3"
   }
-
+# Source stage
   stage {
     name = "Source"
-
+# Source action
     action {
       name            = "Source"
       category        = "Source"
@@ -58,10 +61,10 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
-
+# Build stage
   stage {
     name = "Build"
-
+# Build action
     action {
       name            = "Build"
       category        = "Build"
@@ -75,10 +78,10 @@ resource "aws_codepipeline" "example" {
       }
     }
   }
-
+# Deploy stage
   stage {
     name = "Deploy"
-
+# Deploy action
     action {
       name            = "Deploy"
       category        = "Deploy"
