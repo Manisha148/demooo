@@ -15,7 +15,7 @@ resource "aws_codebuild_project" "example" {
 
   source {
     type            = "S3"
-    location        = var.s3_bucket_name
+    location        = "s3://demopipeline00981/source-code.zip"
     buildspec       = "buildspec.yml"
     insecure_ssl    = false
     report_build_status = true
