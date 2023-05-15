@@ -11,14 +11,9 @@ resource "aws_codebuild_project" "example" {
  
 }
 
- artifact_store {
-#     location = "demopipeline00981"
-#     type     = "S3"
-#   }
-
   source {
     type            = "S3"
-    location        = "s3://your-bucket-name/source-code.zip"
+    location        = "s3://demopipeline00981/demooo-main.zip"
     buildspec       = "buildspec.yml"
     insecure_ssl    = false
     report_build_status = true
