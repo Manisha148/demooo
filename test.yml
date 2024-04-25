@@ -33,3 +33,5 @@ pipeline:
                   spec:
                     shell: Sh
                     command: echo hello
+        delegateSelectors:
+          - docker-delegate
