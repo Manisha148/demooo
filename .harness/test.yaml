@@ -34,4 +34,5 @@ pipeline:
                     shell: Sh
                     command: echo hi
         delegateSelectors:
-          - docker-delegate
+          - delegate-2-terraform
+          - docker-delegate2-terraform-terragrunt
