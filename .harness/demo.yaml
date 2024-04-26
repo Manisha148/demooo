@@ -4,20 +4,14 @@ pipeline:
   projectIdentifier: default_project
   orgIdentifier: default
   tags: {}
-  properties:
-    ci:
-      codebase:
-        connectorRef: manisha
-        repoName: demooo
-        build: <+input>
   stages:
     - stage:
-        name: test
-        identifier: test
+        name: demoo
+        identifier: demoo
         description: ""
         type: CI
         spec:
-          cloneCodebase: true
+          cloneCodebase: false
           platform:
             os: Linux
             arch: Amd64
@@ -35,3 +29,4 @@ pipeline:
                     command: echo hello
         delegateSelectors:
           - docker-delegate
+          - vmlinuxamd64
